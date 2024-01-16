@@ -28,7 +28,7 @@ export const checkForOrgMember = async (
 ): Promise<{ isMember: boolean; identifier: string }> => {
   let isMember = false;
   let identifier = "";
-  let result: CheckOrgMemberResponse;
+  let result: CheckOrgMemberResponse | any; // Add any type to handle unknown response type
 
   // Query the CyberConnect graphQL
   try {
@@ -44,7 +44,7 @@ export const checkForOrgMember = async (
           }
         }`,
     });
-    if (result.data.errors) {
+    if (result.data.errors && result.data.errors.length > 0) {
       throw result.data.errors[0].message;
     }
   } catch (e: unknown) {
