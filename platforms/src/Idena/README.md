@@ -2,7 +2,7 @@
 
 Guide to working with the Idena stamps.
 
-## Local Testing
+## Setting Up and Testing the Idena Platform Stamps
 
 You must run the 1. Clone the `idena-web` repository:
    ```
@@ -15,7 +15,14 @@ cd idena-web
    npm install
    ```
 
-3. Start the Idena server:
+3. Install the dependencies:
+   ```
+npm i --force
+   ```
+
+4. Start the Idena server:
+   ```
+npx next dev -p 3004, npm i --force
    ```
    npx next dev -p 3004
    ```
@@ -35,7 +42,7 @@ NEXT_PUBLIC_PASSPORT_IDENA_WEB_APP=http://localhost:3004/
 NEXT_PUBLIC_PASSPORT_IDENA_CALLBACK=http://localhost:3000/
 ```
 
-You must log in to Idena with a real account. Gitcoin has been provided a test
+You must log in to Idena with a real account. Please request the test account details from Gitcoin. Note that even though the frontend makes the call to the local server, the IAM will still call the real Idena API.
 account, ask for details.
 
 Note that even though the frontend makes the call to the local server, the IAM
