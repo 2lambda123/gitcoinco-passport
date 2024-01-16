@@ -15,7 +15,7 @@ const loadIdenaCache = (token: string): IdenaCache => loadCacheSession(token, "I
 const API_URL = "https://api.idena.io/";
 
 const generateToken = (): string => {
-  return `idena-${crypto.randomBytes(32).toString("hex")}`;
+  return `idena-${crypto.randomBytes(32).toString("hex")}`; // Generate token for Idena sign-in
 };
 
 const generateNonce = (): string => {
@@ -39,7 +39,8 @@ export const loadIdenaSession = (token: string, address: string): string | undef
 
 export const authenticate = async (token: string, signature: string): Promise<boolean> => {
   const session = loadIdenaCache(token);
-  if (!session.address || session.signature) {
+  if (!session.address || !session.signature) {
+    throw new Error("Invalid session, address or signature is missing");
     return false;
   }
   let address;
@@ -143,6 +144,7 @@ const loadSessionAddress = (token: string, context: IdenaContext): string => {
   if (!context.idena.address) {
     const session = loadIdenaCache(token);
     if (!session.address || !session.signature) {
+      throw new Error("Invalid session, unable to retrieve authenticated address");
       throw "Invalid session, unable to retrieve authenticated address";
     }
     context.idena.address = session.address;
