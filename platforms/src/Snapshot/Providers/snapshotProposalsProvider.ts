@@ -181,7 +181,7 @@ export class SnapshotProposalsProvider implements Provider {
       };
 
     try {
-      verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+      verifiedPayload = await checkForSnapshotProposalsOld(snapshotGraphQLDatabase, address);
 
       valid = address && verifiedPayload.proposalHasVotes ? true : false;
     } catch (e) {
