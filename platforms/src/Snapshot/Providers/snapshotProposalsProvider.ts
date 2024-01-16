@@ -1,5 +1,5 @@
 // ----- Types
-import type { Provider, ProviderOptions } from "../../types";
+import type { Provider, ProviderOptions } from "../../../types";
 import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 
 // ----- Libs
@@ -28,7 +28,8 @@ interface ProposalsQueryResponse {
 
 type SnapshotProposalCheckResult = {
   proposalHasVotes: boolean;
-};
+}
+import { snapshotGraphQLDatabase } from "../../config";;
 
 // Export a Snapshot proposals provider
 export class SnapshotProposalsProvider implements Provider {
@@ -76,7 +77,7 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
   let proposalHasVotes = false;
   let result: ProposalsQueryResponse;
 
-  // Query the Snapshot graphQL DB
+  // Query the Snapshot graphQL database
   try {
     result = await axios.post(url, {
       query: `
