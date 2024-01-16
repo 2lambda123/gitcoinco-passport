@@ -46,6 +46,7 @@ export class SnapshotVotesProvider implements Provider {
 
   // Verify that the address that is passed in has voted on 2 or more DAO proposals
   async verify(payload: RequestPayload): Promise<VerifiedPayload> {
+    let error = "An error occurred during the snapshotVotesProvider.verify call";
     const address = payload.address.toLocaleLowerCase();
     let valid = false,
       verifiedPayload = {
