@@ -53,16 +53,22 @@ export class SnapshotProposalsProvider implements Provider {
       };
 
     try {
-      verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+      // Verify that the address that is passed in has created a proposal that
+  // Log the address being verified
+  console.log('Verifying address:', address);
+
+  verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
 
       valid = address && verifiedPayload.proposalHasVotes ? true : false;
     } catch (e) {
-      return { valid: false };
+    console.error('An error occurred during the snapshotProposalsProvider.verify call:', e);
+    return { error: 'An error occurred during the snapshotProposalsProvider.verify call' };
+      return { valid: false, error: 'An error occurred during the snapshotProposalsProvider.verify call' };
     }
 
     return {
       valid: valid,
-      record: valid
+        valid: valid
         ? {
             address: address,
             hasGT1SnapshotProposalsVotedOn: String(valid),
@@ -77,7 +83,8 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
   let result: ProposalsQueryResponse;
 
   // Query the Snapshot graphQL DB
-  try {
+  try 
+  {
     result = await axios.post(url, {
       query: `
         query Proposals {
@@ -99,15 +106,31 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
 
   const proposals = result.data.data.proposals;
 
-  // Check to see if the user has any proposals, and if they do,
+    // Check to see if the user has any proposals, and if they do,
+
+  // Process the response data to check for proposal votes
+
+  // Log the proposal check result
+console.log('Proposal check result:', proposalHasVotes);
+  const proposals = result.data.data.proposals;
+
+  // Log the resulting proposals data
+  console.log('Retrieved proposals data:', proposals);
+  console.log('Retrieved proposals data:', proposals);
   // iterate through the proposals list to find the first instance of a
   // proposal with a total score > 0, which indicates it received votes
-  if (proposals.length > 0) {
+    if (proposals.length > 0) {
+    console.log('Processing proposals list...');
+    console.log('Processing proposals list...');
     const proposalCheck = proposals.findIndex((proposal) => proposal.scores_total > 0);
     proposalHasVotes = proposalCheck === -1 ? false : true;
   }
 
-  // Return false by default (if the proposals array is empty or there is no
+   
+  if (!result || !result.data || !result.data.proposals) {
+    console.error('Invalid response data from the snapshot query:', result);
+    throw 'Invalid response data from the snapshot query';
+  }
   // matching verification)
   return {
     proposalHasVotes,
