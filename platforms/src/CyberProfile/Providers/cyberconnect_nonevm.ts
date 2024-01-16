@@ -44,14 +44,16 @@ export const checkForOrgMember = async (
           }
         }`,
     });
-    if (result.data.errors) {
+    if (result.data.data.errors) {
       throw result.data.errors[0].message;
     }
   } catch (e: unknown) {
     throw `The following error is being thrown: ${JSON.stringify(e)}`;
   }
 
-  isMember = result.data.data.checkVerifiedOrganizationMember.isVerifiedOrganizationMember;
+  if (result.data.data) {
+  throw (result.data.errors || 'Unknown error')
+}
   identifier = result.data.data.checkVerifiedOrganizationMember.uniqueIdentifier;
   return {
     isMember,
