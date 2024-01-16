@@ -5,7 +5,7 @@ authentications.
 
 ```
 # Ensure you copy and update the required variables for the environment
-$ cp ./.env-example.env ./.env
+$ cp ./.env.example ./.env
 
 # Install and start the IAM server
 $ yarn install
@@ -13,6 +13,16 @@ $ yarn start
 ```
 
 Then send a POST request to `http://localhost:80/api/v0.0.0/challenge` with the following JSON body:
+
+```
+
+# IAM and Passport Authority
+
+The IAM and Passport Authority module is responsible for issuing verifiableCredentials based on verified Provider authentications. It provides a secure and reliable environment for managing user authentication and authorization.
+
+## Installation
+
+Ensure that you have updated the required variables in the environment by copying and updating the .env.example file to .env.
 
 ```
 {
