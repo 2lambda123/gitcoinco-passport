@@ -28,14 +28,14 @@ export class GithubAccountCreationProvider implements Provider {
   }
 
   async verify(payload: RequestPayload, context: GithubContext): Promise<VerifiedPayload> {
-    const githubUserData = await fetchGithubUserData(context, payload.proofs.code);
+    const githubUserData = await context.github.getUserData(payload.proofs.code);
     const valid = checkAccountCreationDays(parseInt(this._options.threshold), githubUserData.createdAt);
 
     const githubId = context.github.id;
 
     return {
       valid,
-      error: githubUserData.errors,
+      error: githubUserData.errors || ['Internal server error'],
       record: valid ? { id: githubId } : undefined,
     };
   }
