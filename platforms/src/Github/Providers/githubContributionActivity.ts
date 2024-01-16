@@ -27,7 +27,7 @@ export class GithubContributionActivityProvider implements Provider {
 
     return {
       valid,
-      error: contributionResult.errors,
+      error: contributionResult.error,
       record: valid ? { id: githubId } : undefined,
     };
   }
