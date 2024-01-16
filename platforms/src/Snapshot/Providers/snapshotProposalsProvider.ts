@@ -1,6 +1,140 @@
 // ----- Types
 import type { Provider, ProviderOptions } from "../../types";
 import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
+import axios from "axios";
+
+export const snapshotGraphQLDatabase = "https://hub.snapshot.org/graphql";
+
+interface SnapshotProposalQueryResult {
+  proposals: [
+    {
+      id?: string;
+      scores_total?: number;
+      author?: string;
+    }
+  ];
+}
+
+interface ProposalsQueryResponse {
+  data?: {
+    data?: SnapshotProposalQueryResult;
+  };
+  status?: number;
+}
+
+type SnapshotProposalCheckResult = {
+  proposalHasVotes: boolean;
+};
+
+export class SnapshotProposalsProvider implements Provider {
+  type = "SnapshotProposalsProvider";
+  _options = {};
+
+  constructor(options: ProviderOptions = {}) {
+    this._options = { ...this._options, ...options };
+  }
+
+  async verify(payload: RequestPayload): Promise<VerifiedPayload> {
+    const address = payload.address.toLocaleLowerCase();
+    let valid = false,
+      verifiedPayload = {
+        proposalHasVotes: false,
+      };
+
+    try {
+=======
+<<<<<<< REPLACE (index=1)
+interface ProposalsQueryResponse {
+  data?: {
+    data?: SnapshotProposalQueryResult;
+  };
+  status?: number;
+}
+
+type SnapshotProposalCheckResult = {
+  proposalHasVotes: boolean;
+};
+
+export class SnapshotProposalsProvider implements Provider {
+  type = "SnapshotProposalsProvider";
+  _options = {};
+
+  constructor(options: ProviderOptions = {}) {
+    this._options = { ...this._options, ...options };
+  }
+
+  async verify(payload: RequestPayload): Promise<VerifiedPayload> {
+      const address = payload.address.toLocaleLowerCase();
+      let valid = false;
+      let verifiedPayload: SnapshotProposalCheckResult = {
+        proposalHasVotes: false,
+      };
+
+      try {
+        verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+        valid = address && verifiedPayload.proposalHasVotes;
+      } catch (e) {
+        console.error("Error occurred during verification:", e);
+        return { valid: false };
+      }
+
+      return {
+        valid: valid,
+        record: valid
+          ? {
+              address: address,
+              hasGT1SnapshotProposalsVotedOn: String(valid),
+            }
+          : undefined,
+      };
+    }
+    const address = payload.address.toLocaleLowerCase();
+    let valid = false,
+      verifiedPayload = {
+        proposalHasVotes: false,
+      };
+
+    try {
+      verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+
+      valid = address && verifiedPayload.proposalHasVotes ? true : false;
+    } catch (e) {
+      return { valid: false };
+    }
+
+    return {
+      valid: valid,
+      record: valid
+        ? {
+            address: address,
+            hasGT1SnapshotProposalsVotedOn: String(valid),
+          }
+        : undefined,
+    };
+  }
+}
+    const address = payload.address.toLocaleLowerCase();
+    let valid = false,
+      verifiedPayload = {
+        proposalHasVotes: false,
+      };
+
+    try {
+      verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+
+      valid = address && verifiedPayload.proposalHasVotes ? true : false;
+    } catch (e) {
+      return { valid: false };
+    }
+
+    return {
+      valid: valid,
+      record: valid
+        ? {
+            address: address,
+            hasGT1SnapshotProposalsVotedOn: String(valid),
+=======
+new line(s) to replace
 
 // ----- Libs
 import axios from "axios";
@@ -64,6 +198,50 @@ export class SnapshotProposalsProvider implements Provider {
         : undefined,
     };
   }
+}
+    const address = payload.address.toLocaleLowerCase();
+    let valid = false,
+      verifiedPayload = {
+        proposalHasVotes: false,
+      };
+
+    try {
+      verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+
+      valid = address && verifiedPayload.proposalHasVotes ? true : false;
+    } catch (e) {
+      return { valid: false };
+    }
+
+    return {
+      valid: valid,
+      record: valid
+        ? {
+            address: address,
+            hasGT1SnapshotProposalsVotedOn: String(valid),
+  const address = payload.address.toLocaleLowerCase();
+  let valid = false;
+  let verifiedPayload: SnapshotProposalCheckResult = {
+    proposalHasVotes: false,
+  };
+
+  try {
+    verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+    valid = address && verifiedPayload.proposalHasVotes;
+  } catch (e) {
+    console.error("Error occurred during verification:", e);
+    return { valid: false };
+  }
+
+  return {
+    valid: valid,
+    record: valid
+      ? {
+          address: address,
+          hasGT1SnapshotProposalsVotedOn: String(valid),
+        }
+      : undefined,
+  };
 }
     const address = payload.address.toLocaleLowerCase();
     let valid = false,
