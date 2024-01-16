@@ -60,7 +60,11 @@ export class FacebookProfilePictureProvider implements Provider {
         notExpired && formattedData.app_id === APP_ID && formattedData.is_valid && !!formattedData.user_id;
 
       // Get the FB profile
-      const profileResponseData = await verifyFacebookProfilePic(payload.proofs.accessToken);
+      const profileResponseData = await verifyFacebookProfilePic(payload.proofs.accessToken)
+        .catch((e) => {
+          console.error('Error in Facebook API request:', e);
+          return { status: 500, statusText: 'Internal Server Error' };
+        });
 
       if (profileResponseData.status != 200) {
         // The exception handle will catch that ...
