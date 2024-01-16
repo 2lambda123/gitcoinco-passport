@@ -34,21 +34,21 @@ export const checkForOrgMember = async (
   try {
     result = await axios.post(url, {
       query: `
-        query CheckOrgMember {
-          checkVerifiedOrganizationMember (
-            address: "${address}"
-          )
-          {
-            isVerifiedOrganizationMember
-            uniqueIdentifier
-          }
-        }`,
+              query CheckOrgMember {
+                checkVerifiedOrganizationMember (
+                  address: \`${address}\`
+                )
+                {
+                  isVerifiedOrganizationMember
+                  uniqueIdentifier
+                }
+              }`,
     });
     if (result.data && result.data.errors) {
       throw result.data.errors[0].message;
     }
   } catch (e: unknown) {
-    throw `The following error is being thrown: ${JSON.stringify(e)}`;
+    throw formatErrorMessage(e);
   }
 
   isMember = result.data.data.checkVerifiedOrganizationMember.isVerifiedOrganizationMember;

@@ -270,6 +270,9 @@ export class SnapshotProposalsProvider implements Provider {
 }
 
 const checkForSnapshotProposals = async (url: string, address: string): Promise<SnapshotProposalCheckResult> => {
+  if (!result.data) {
+    return { proposalHasVotes: false };
+  }
   let proposalHasVotes = false;
   let result: ProposalsQueryResponse;
 
@@ -309,12 +312,13 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
 
   // Query the Snapshot graphQL DB
   try {
+    let result;
     result = await axios.post(url, {
       query: `
         query Proposals {
           proposals (
             where: {
-              author: "${address}"
+              author: ${address}
             }
           ) {
             id
@@ -324,8 +328,8 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
         }`,
     });
   } catch (e: unknown) {
-    const error = e as { response: { data: { message: string } } };
-    throw `The following error is being thrown: ${error.response.data.message}`;
+    throw formatErrorMessage(e);
+    throw formatErrorMessage(e);
   }
 
   const proposals = result.data.data.proposals;
