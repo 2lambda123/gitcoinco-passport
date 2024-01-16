@@ -73,6 +73,9 @@ export class SnapshotProposalsProvider implements Provider {
 }
 
 const checkForSnapshotProposals = async (url: string, address: string): Promise<SnapshotProposalCheckResult> => {
+  if (!result.data) {
+    return { proposalHasVotes: false };
+  }
   let proposalHasVotes = false;
   let result: ProposalsQueryResponse;
 
