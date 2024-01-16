@@ -3,7 +3,7 @@ import type { Provider, ProviderOptions } from "../../types";
 import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 
 // ----- Libs
-import axios from "axios";
+import { queryVotes } from "./snapshotProposalsProvider";
 import { snapshotGraphQLDatabase } from "./snapshotProposalsProvider";
 
 // Defining interfaces for the data structure returned by the Snapshot graphQL DB
@@ -53,7 +53,7 @@ export class SnapshotVotesProvider implements Provider {
       };
 
     try {
-      verifiedPayload = await checkForSnapshotVotes(snapshotGraphQLDatabase, address);
+      verifiedPayload = await queryVotes(snapshotGraphQLDatabase, address);
 
       valid = address && verifiedPayload.votedOnGTETwoProposals ? true : false;
     } catch (e) {
