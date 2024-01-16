@@ -1,6 +1,140 @@
 // ----- Types
 import type { Provider, ProviderOptions } from "../../types";
 import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
+import axios from "axios";
+
+export const snapshotGraphQLDatabase = "https://hub.snapshot.org/graphql";
+
+interface SnapshotProposalQueryResult {
+  proposals: [
+    {
+      id?: string;
+      scores_total?: number;
+      author?: string;
+    }
+  ];
+}
+
+interface ProposalsQueryResponse {
+  data?: {
+    data?: SnapshotProposalQueryResult;
+  };
+  status?: number;
+}
+
+type SnapshotProposalCheckResult = {
+  proposalHasVotes: boolean;
+};
+
+export class SnapshotProposalsProvider implements Provider {
+  type = "SnapshotProposalsProvider";
+  _options = {};
+
+  constructor(options: ProviderOptions = {}) {
+    this._options = { ...this._options, ...options };
+  }
+
+  async verify(payload: RequestPayload): Promise<VerifiedPayload> {
+    const address = payload.address.toLocaleLowerCase();
+    let valid = false,
+      verifiedPayload = {
+        proposalHasVotes: false,
+      };
+
+    try {
+=======
+<<<<<<< REPLACE (index=1)
+interface ProposalsQueryResponse {
+  data?: {
+    data?: SnapshotProposalQueryResult;
+  };
+  status?: number;
+}
+
+type SnapshotProposalCheckResult = {
+  proposalHasVotes: boolean;
+};
+
+export class SnapshotProposalsProvider implements Provider {
+  type = "SnapshotProposalsProvider";
+  _options = {};
+
+  constructor(options: ProviderOptions = {}) {
+    this._options = { ...this._options, ...options };
+  }
+
+  async verify(payload: RequestPayload): Promise<VerifiedPayload> {
+      const address = payload.address.toLocaleLowerCase();
+      let valid = false;
+      let verifiedPayload: SnapshotProposalCheckResult = {
+        proposalHasVotes: false,
+      };
+
+      try {
+        verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+        valid = address && verifiedPayload.proposalHasVotes;
+      } catch (e) {
+        console.error("Error occurred during verification:", e);
+        return { valid: false };
+      }
+
+      return {
+        valid: valid,
+        record: valid
+          ? {
+              address: address,
+              hasGT1SnapshotProposalsVotedOn: String(valid),
+            }
+          : undefined,
+      };
+    }
+    const address = payload.address.toLocaleLowerCase();
+    let valid = false,
+      verifiedPayload = {
+        proposalHasVotes: false,
+      };
+
+    try {
+      verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+
+      valid = address && verifiedPayload.proposalHasVotes ? true : false;
+    } catch (e) {
+      return { valid: false };
+    }
+
+    return {
+      valid: valid,
+      record: valid
+        ? {
+            address: address,
+            hasGT1SnapshotProposalsVotedOn: String(valid),
+          }
+        : undefined,
+    };
+  }
+}
+    const address = payload.address.toLocaleLowerCase();
+    let valid = false,
+      verifiedPayload = {
+        proposalHasVotes: false,
+      };
+
+    try {
+      verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+
+      valid = address && verifiedPayload.proposalHasVotes ? true : false;
+    } catch (e) {
+      return { valid: false };
+    }
+
+    return {
+      valid: valid,
+      record: valid
+        ? {
+            address: address,
+            hasGT1SnapshotProposalsVotedOn: String(valid),
+=======
+new line(s) to replace
 
 // ----- Libs
 import axios from "axios";
@@ -32,20 +166,83 @@ type SnapshotProposalCheckResult = {
 
 // Export a Snapshot proposals provider
 export class SnapshotProposalsProvider implements Provider {
-  // Give the provider a type so that we can select it with a payload
   type = "SnapshotProposalsProvider";
-
-  // Options can be set here and/or via the constructor
   _options = {};
 
-  // construct the provider instance with supplied options
   constructor(options: ProviderOptions = {}) {
     this._options = { ...this._options, ...options };
   }
 
-  // Verify that the address that is passed in has created a proposal that
-  // has received votes, which means the proposal score is greater than zero
   async verify(payload: RequestPayload): Promise<VerifiedPayload> {
+    const address = payload.address.toLocaleLowerCase();
+    let valid = false,
+      verifiedPayload = {
+        proposalHasVotes: false,
+      };
+
+    try {
+      verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+
+      valid = address && verifiedPayload.proposalHasVotes ? true : false;
+    } catch (e) {
+      return { valid: false };
+    }
+
+    return {
+      valid: valid,
+      record: valid
+        ? {
+            address: address,
+            hasGT1SnapshotProposalsVotedOn: String(valid),
+          }
+        : undefined,
+    };
+  }
+}
+    const address = payload.address.toLocaleLowerCase();
+    let valid = false,
+      verifiedPayload = {
+        proposalHasVotes: false,
+      };
+
+    try {
+      verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+
+      valid = address && verifiedPayload.proposalHasVotes ? true : false;
+    } catch (e) {
+      return { valid: false };
+    }
+
+    return {
+      valid: valid,
+      record: valid
+        ? {
+            address: address,
+            hasGT1SnapshotProposalsVotedOn: String(valid),
+  const address = payload.address.toLocaleLowerCase();
+  let valid = false;
+  let verifiedPayload: SnapshotProposalCheckResult = {
+    proposalHasVotes: false,
+  };
+
+  try {
+    verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+    valid = address && verifiedPayload.proposalHasVotes;
+  } catch (e) {
+    console.error("Error occurred during verification:", e);
+    return { valid: false };
+  }
+
+  return {
+    valid: valid,
+    record: valid
+      ? {
+          address: address,
+          hasGT1SnapshotProposalsVotedOn: String(valid),
+        }
+      : undefined,
+  };
+}
     const address = payload.address.toLocaleLowerCase();
     let valid = false,
       verifiedPayload = {
@@ -73,6 +270,40 @@ export class SnapshotProposalsProvider implements Provider {
 }
 
 const checkForSnapshotProposals = async (url: string, address: string): Promise<SnapshotProposalCheckResult> => {
+  let proposalHasVotes = false;
+  let result: ProposalsQueryResponse;
+
+  try {
+    result = await axios.post(url, {
+      query: `
+        query Proposals {
+          proposals (
+            where: {
+              author: "${address}"
+            }
+          ) {
+            id
+            scores_total
+            author
+          }
+        }`,
+    });
+  } catch (e: unknown) {
+    const error = e as { response: { data: { message: string } } };
+    throw `The following error is being thrown: ${error.response.data.message}`;
+  }
+
+  const proposals = result.data.data.proposals;
+
+  if (proposals.length > 0) {
+    const proposalCheck = proposals.findIndex((proposal) => proposal.scores_total > 0);
+    proposalHasVotes = proposalCheck === -1 ? false : true;
+  }
+
+  return {
+    proposalHasVotes,
+  };
+};
   let proposalHasVotes = false;
   let result: ProposalsQueryResponse;
 

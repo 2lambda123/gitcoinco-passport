@@ -3,7 +3,7 @@ import { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 import { Provider, ProviderOptions } from "../../types";
 
 // ----- Idena SignIn library
-import { requestIdentityAge, IdenaContext } from "../procedures/idenaSignIn";
+import { requestIdentityStake, IdenaContext } from "../procedures/idenaSignIn";
 
 // Class used as a base for verifying Idena age
 abstract class IdenaAgeProvider implements Provider {
@@ -25,7 +25,7 @@ abstract class IdenaAgeProvider implements Provider {
   // verify that the proof object contains valid === "true"
   async verify(payload: RequestPayload, context: IdenaContext): Promise<VerifiedPayload> {
     const token = payload.proofs.sessionKey;
-    const { valid, address, expiresInSeconds } = await checkAge(token, context, this.minAge);
+    const { valid, address, expiresInSeconds } = await checkStake(token, context, this.minAge);
     if (!valid) {
       return { valid: false };
     }
