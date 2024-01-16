@@ -47,17 +47,17 @@ export class SnapshotVotesProvider implements Provider {
   // Verify that the address that is passed in has voted on 2 or more DAO proposals
   async verify(payload: RequestPayload): Promise<VerifiedPayload> {
     const address = payload.address.toLocaleLowerCase();
-    let valid = false,
+    const valid = verifiedPayload.votedOnGTETwoProposals,
       verifiedPayload = {
         votedOnGTETwoProposals: false,
       };
 
     try {
-      verifiedPayload = await checkForSnapshotVotes(snapshotGraphQLDatabase, address);
+      verifiedPayload = await checkForSnapshotVotes(snapshotGraphQLDatabase, address).catch((e) => ({ votedOnGTETwoProposals: false }))
 
-      valid = address && verifiedPayload.votedOnGTETwoProposals ? true : false;
+      verifiedPayload.valid = verifiedPayload.votedOnGTETwoProposals; verifiedPayload.address = address;
     } catch (e) {
-      return { valid: false };
+      return verifiedPayload;
     }
 
     return Promise.resolve({
