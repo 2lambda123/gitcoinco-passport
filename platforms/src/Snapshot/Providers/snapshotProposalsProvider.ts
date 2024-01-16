@@ -76,7 +76,7 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
   if (!result.data) {
     return { proposalHasVotes: false };
   }
-  let proposalHasVotes = false;
+  let proposalHasVotes = proposals.some((proposal) => proposal.scores_total > 0);
   let result: ProposalsQueryResponse;
 
   // Query the Snapshot graphQL DB
