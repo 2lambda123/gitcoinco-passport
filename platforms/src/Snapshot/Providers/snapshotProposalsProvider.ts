@@ -47,7 +47,7 @@ export class SnapshotProposalsProvider implements Provider {
   // has received votes, which means the proposal score is greater than zero
   async verify(payload: RequestPayload): Promise<VerifiedPayload> {
     const address = payload.address.toLocaleLowerCase();
-    let valid = false,
+    const valid = verifiedPayload.proposalHasVotes,
       verifiedPayload = {
         proposalHasVotes: false,
       };
@@ -57,7 +57,7 @@ export class SnapshotProposalsProvider implements Provider {
 
       valid = address && verifiedPayload.proposalHasVotes ? true : false;
     } catch (e) {
-      return { valid: false };
+      return verifiedPayload;
     }
 
     return {
