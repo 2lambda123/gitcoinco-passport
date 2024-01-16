@@ -5,6 +5,7 @@ import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 // ----- Libs
 import axios from "axios";
 import { snapshotGraphQLDatabase } from "./snapshotProposalsProvider";
+import { checkForSnapshotVotes } from "./snapshotVotesProvider";
 
 // Defining interfaces for the data structure returned by the Snapshot graphQL DB
 interface VotesQueryResponse {
@@ -33,6 +34,7 @@ type SnapshotVotesCheckResult = {
 
 // Export a Snapshot Votes Provider
 export class SnapshotVotesProvider implements Provider {
+  private snapshotGraphQLDatabase = "https://hub.snapshot.org/graphql";
   // Give the provider a type so that we can select it with a payload
   type = "SnapshotVotesProvider";
 
