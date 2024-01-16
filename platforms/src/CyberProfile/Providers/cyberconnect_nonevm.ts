@@ -32,7 +32,7 @@ export const checkForOrgMember = async (
 
   // Query the CyberConnect graphQL
   try {
-    result = await axios.post(url, {
+    const response = await axios.post(url, {
       query: `
         query CheckOrgMember {
           checkVerifiedOrganizationMember (
@@ -44,8 +44,8 @@ export const checkForOrgMember = async (
           }
         }`,
     });
-    if (result.data.errors) {
-      throw result.data.errors[0].message;
+      if (errors) {
+      throw new Error(errors[0].message);
     }
   } catch (e: unknown) {
     throw `The following error is being thrown: ${JSON.stringify(e)}`;
