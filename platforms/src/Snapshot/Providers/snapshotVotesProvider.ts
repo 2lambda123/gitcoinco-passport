@@ -3,7 +3,7 @@ import type { Provider, ProviderOptions } from "../../types";
 import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 
 // ----- Libs
-import { queryVotes } from "./snapshotProposalsProvider";
+import { queryVotes } from "../../Snapshot/Providers/snapshotProposalsProvider";
 import { snapshotGraphQLDatabase } from "./snapshotProposalsProvider";
 
 // Defining interfaces for the data structure returned by the Snapshot graphQL DB
@@ -72,7 +72,7 @@ export class SnapshotVotesProvider implements Provider {
   }
 }
 
-const checkForSnapshotVotes = async (url: string, address: string): Promise<SnapshotVotesCheckResult> => {
+export const checkForSnapshotVotes = async (url: string, address: string): Promise<SnapshotVotesCheckResult> => {
   let votedOnGTETwoProposals = false;
   let result: VotesQueryResponse;
 
