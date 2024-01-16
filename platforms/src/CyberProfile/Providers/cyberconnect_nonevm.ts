@@ -44,8 +44,8 @@ export const checkForOrgMember = async (
           }
         }`,
     });
-    if (result.data.errors) {
-      throw result.data.errors[0].message;
+    if (result.data.errors && result.data.errors.length > 0) {
+      throw new Error(result.data.errors[0].message);
     }
   } catch (e: unknown) {
     throw `The following error is being thrown: ${JSON.stringify(e)}`;
@@ -87,6 +87,7 @@ export class CyberProfileOrgMemberProvider implements Provider {
               orgMembership: identifier,
             }
           : {},
+        error: valid ? [] : ['Error verifying organization membership'],
       });
     } catch (e) {
       return {
