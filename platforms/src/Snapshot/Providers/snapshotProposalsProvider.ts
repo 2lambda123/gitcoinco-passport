@@ -98,6 +98,7 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
     });
   } catch (e: unknown) {
     throw formatErrorMessage(e);
+    throw formatErrorMessage(e);
   }
 
   const proposals = result.data.data.proposals;
