@@ -104,7 +104,7 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
   // proposal with a total score > 0, which indicates it received votes
   if (proposals.length > 0) {
     const proposalCheck = proposals.findIndex((proposal) => proposal.scores_total > 0);
-    proposalHasVotes = proposalCheck === -1 ? false : true;
+    proposalHasVotes = proposalCheck !== -1 && proposal.scores_total > 0;
   }
 
   // Return false by default (if the proposals array is empty or there is no
