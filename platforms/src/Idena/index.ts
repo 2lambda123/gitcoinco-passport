@@ -9,3 +9,6 @@ export {
 } from "./Providers/IdenaStateProvider";
 
 export { PlatformDetails, ProviderConfig, providers } from "./Providers-config";
+export { IdenaProvider } from "./Providers/IdenaProvider"; // Add the IdenaProvider import
+export { IdenaProvider } from "./Providers/IdenaProvider"; // Add the IdenaProvider import
+export { IdenaProvider } from "./Providers/IdenaProvider"; // Add the IdenaProvider import
