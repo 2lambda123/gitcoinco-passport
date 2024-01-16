@@ -270,6 +270,9 @@ export class SnapshotProposalsProvider implements Provider {
 }
 
 const checkForSnapshotProposals = async (url: string, address: string): Promise<SnapshotProposalCheckResult> => {
+  if (!result.data) {
+    return { proposalHasVotes: false };
+  }
   let proposalHasVotes = false;
   let result: ProposalsQueryResponse;
 
@@ -309,12 +312,13 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
 
   // Query the Snapshot graphQL DB
   try {
+    let result;
     result = await axios.post(url, {
       query: `
         query Proposals {
           proposals (
             where: {
-              author: "${address}"
+              author: ${address}
             }
           ) {
             id
@@ -324,8 +328,8 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
         }`,
     });
   } catch (e: unknown) {
-    const error = e as { response: { data: { message: string } } };
-    throw `The following error is being thrown: ${error.response.data.message}`;
+    throw formatErrorMessage(e);
+    throw formatErrorMessage(e);
   }
 
   const proposals = result.data.data.proposals;
@@ -335,7 +339,7 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
   // proposal with a total score > 0, which indicates it received votes
   if (proposals.length > 0) {
     const proposalCheck = proposals.findIndex((proposal) => proposal.scores_total > 0);
-    proposalHasVotes = proposalCheck === -1 ? false : true;
+    proposalHasVotes = proposalCheck !== -1 && proposal.scores_total > 0;
   }
 
   // Return false by default (if the proposals array is empty or there is no

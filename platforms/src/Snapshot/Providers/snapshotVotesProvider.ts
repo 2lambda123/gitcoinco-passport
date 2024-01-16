@@ -5,6 +5,7 @@ import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 // ----- Libs
 import axios from "axios";
 import { snapshotGraphQLDatabase } from "./snapshotProposalsProvider";
+import { checkForSnapshotVotes } from "./snapshotVotesProvider";
 
 // Defining interfaces for the data structure returned by the Snapshot graphQL DB
 interface VotesQueryResponse {
@@ -33,6 +34,7 @@ type SnapshotVotesCheckResult = {
 
 // Export a Snapshot Votes Provider
 export class SnapshotVotesProvider implements Provider {
+  private snapshotGraphQLDatabase = "https://hub.snapshot.org/graphql";
   // Give the provider a type so that we can select it with a payload
   type = "SnapshotVotesProvider";
 
@@ -96,11 +98,10 @@ const checkForSnapshotVotes = async (url: string, address: string): Promise<Snap
         }`,
     });
   } catch (e: unknown) {
-    const error = e as { response: { data: { message: string } } };
-    throw `The following error is being thrown: ${error.response.data.message}`;
+    throw formatErrorMessage(e);
   }
 
-  const votes = result.data.data.votes;
+  const votes = (result?.data?.data?.votes || []);
 
   // Check to see if the user has voted on 2 or more DAO proposals, and if they have
   // set votedOnGTETwoProposals = true
