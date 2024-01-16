@@ -47,11 +47,11 @@ export const checkForOrgMember = async (
     if (result.data.errors) {
       throw result.data.errors[0].message;
     }
-  } catch (e: unknown) {
+  } catch (e) {
     throw `The following error is being thrown: ${JSON.stringify(e)}`;
   }
 
-  isMember = result.data.data.checkVerifiedOrganizationMember.isVerifiedOrganizationMember;
+  isMember = result.data?.data?.checkVerifiedOrganizationMember?.isVerifiedOrganizationMember ?? false;
   identifier = result.data.data.checkVerifiedOrganizationMember.uniqueIdentifier;
   return {
     isMember,
