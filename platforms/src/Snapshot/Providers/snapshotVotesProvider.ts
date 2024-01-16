@@ -97,7 +97,7 @@ const checkForSnapshotVotes = async (url: string, address: string): Promise<Snap
     });
   } catch (e: unknown) {
     const error = e as { response: { data: { message: string } } };
-    throw `The following error is being thrown: ${error.response.data.message}`;
+    throw `The following error is being thrown: ${error.response.data.message} - ${e.message}`;
   }
 
   const votes = result.data.data.votes;
