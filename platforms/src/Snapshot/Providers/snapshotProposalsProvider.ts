@@ -3,7 +3,7 @@ import type { Provider, ProviderOptions } from "../../types";
 import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 
 // ----- Libs
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 // Snapshot graphQL database
 export const snapshotGraphQLDatabase = "https://hub.snapshot.org/graphql";
@@ -45,6 +45,7 @@ export class SnapshotProposalsProvider implements Provider {
 
   // Verify that the address that is passed in has created a proposal that
   // has received votes, which means the proposal score is greater than zero
+  // More extensive tests to cover different scenarios and edge cases are needed
   async verify(payload: RequestPayload): Promise<VerifiedPayload> {
     const address = payload.address.toLocaleLowerCase();
     let valid = false,
@@ -57,7 +58,8 @@ export class SnapshotProposalsProvider implements Provider {
 
       valid = address && verifiedPayload.proposalHasVotes ? true : false;
     } catch (e) {
-      return { valid: false };
+      console.error('Error in verify function:', e);
+      return { valid: false, error: ['Error in verify function'] };
     }
 
     return {
@@ -75,6 +77,7 @@ export class SnapshotProposalsProvider implements Provider {
 const checkForSnapshotProposals = async (url: string, address: string): Promise<SnapshotProposalCheckResult> => {
   let proposalHasVotes = false;
   let result: ProposalsQueryResponse;
+  let axiosError = '';
 
   // Query the Snapshot graphQL DB
   try {
@@ -92,17 +95,18 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
           }
         }`,
     });
-  } catch (e: unknown) {
-    const error = e as { response: { data: { message: string } } };
-    throw `The following error is being thrown: ${error.response.data.message}`;
+  } catch (e) {
+    console.error('Error in checkForSnapshotProposals:', e);
+    return { proposalHasVotes: false, error: ['Error in checkForSnapshotProposals'] };
   }
 
-  const proposals = result.data.data.proposals;
+  const proposals = result?.data?.data?.proposals || [];
+  let gqlError = '';
 
   // Check to see if the user has any proposals, and if they do,
   // iterate through the proposals list to find the first instance of a
   // proposal with a total score > 0, which indicates it received votes
-  if (proposals.length > 0) {
+  if (Array.isArray(proposals) && proposals.length > 0) {
     const proposalCheck = proposals.findIndex((proposal) => proposal.scores_total > 0);
     proposalHasVotes = proposalCheck === -1 ? false : true;
   }
