@@ -81,12 +81,13 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
 
   // Query the Snapshot graphQL DB
   try {
+    let result;
     result = await axios.post(url, {
       query: `
         query Proposals {
           proposals (
             where: {
-              author: "${address}"
+              author: ${address}
             }
           ) {
             id
