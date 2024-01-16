@@ -3,7 +3,7 @@ import type { Provider, ProviderOptions } from "../../types";
 import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 
 // ----- Libs
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 export const cyberconnectGraphQL = "https://api.cyberconnect.dev/";
 
@@ -51,7 +51,10 @@ export const checkForOrgMember = async (
     throw `The following error is being thrown: ${JSON.stringify(e)}`;
   }
 
-  isMember = result.data.data.checkVerifiedOrganizationMember.isVerifiedOrganizationMember;
+  if (!result || !result.data || !result.data.data || !result.data.data.checkVerifiedOrganizationMember) {
+        throw new Error('Invalid response data');
+      }
+      isMember = result.data.data.checkVerifiedOrganizationMember.isVerifiedOrganizationMember;
   identifier = result.data.data.checkVerifiedOrganizationMember.uniqueIdentifier;
   return {
     isMember,
@@ -77,10 +80,26 @@ export class CyberProfileOrgMemberProvider implements Provider {
     // if a signer is provider we will use that address to verify against
     const address = payload.address.toString().toLowerCase();
     let valid = false;
+  let axiosError = '';
+  let gqlError = '';
     try {
       const { isMember, identifier } = await checkForOrgMember(cyberconnectGraphQL, address);
       valid = isMember ? true : false;
-      return Promise.resolve({
+      if (axiosError) {
+      console.error('Axios Error:', axiosError);
+      return {
+        valid: false,
+        error: ['CyberProfile provider request error'],
+      };
+    }
+    if (gqlError) {
+      console.error('GraphQL Error:', gqlError);
+      return {
+        valid: false,
+        error: ['CyberProfile provider GraphQL error'],
+      };
+    }
+    return Promise.resolve({
         valid: valid,
         record: valid
           ? {
