@@ -3,7 +3,7 @@ import type { Provider, ProviderOptions } from "../../types";
 import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 
 // ----- Libs
-import axios from "axios";
+import { queryVotes } from "./snapshotProposalsProvider";
 import { snapshotGraphQLDatabase } from "./snapshotProposalsProvider";
 
 // Defining interfaces for the data structure returned by the Snapshot graphQL DB
@@ -53,7 +53,7 @@ export class SnapshotVotesProvider implements Provider {
       };
 
     try {
-      verifiedPayload = await checkForSnapshotVotes(snapshotGraphQLDatabase, address);
+      verifiedPayload = await queryVotes(snapshotGraphQLDatabase, address);
 
       valid = address && verifiedPayload.votedOnGTETwoProposals ? true : false;
     } catch (e) {
@@ -97,15 +97,21 @@ const checkForSnapshotVotes = async (url: string, address: string): Promise<Snap
     });
   } catch (e: unknown) {
     const error = e as { response: { data: { message: string } } };
-    throw `The following error is being thrown: ${error.response.data.message}`;
+    throw `The following error is being thrown: ${error.response.data.message} - ${e.message}`;
   }
 
   const votes = result.data.data.votes;
 
   // Check to see if the user has voted on 2 or more DAO proposals, and if they have
   // set votedOnGTETwoProposals = true
-  if (votes.length >= 2) {
-    votedOnGTETwoProposals = true;
+  const proposalIds = new Set();
+votes.forEach(vote => {
+  if (vote.proposal && vote.proposal.id) {
+    proposalIds.add(vote.proposal.id);
+  }
+});
+if (proposalIds.size >= 2) {
+    votedOnGTETwoProposals = proposalIds.size >= 2;
   }
 
   // Return false by default (if the proposals array is empty or there is no
