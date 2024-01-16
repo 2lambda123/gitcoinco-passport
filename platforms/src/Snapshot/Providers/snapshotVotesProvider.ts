@@ -3,7 +3,7 @@ import type { Provider, ProviderOptions } from "../../types";
 import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 
 // ----- Libs
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { snapshotGraphQLDatabase } from "./snapshotProposalsProvider";
 
 // Defining interfaces for the data structure returned by the Snapshot graphQL DB
