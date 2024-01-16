@@ -16,11 +16,11 @@ export type GithubTokenResponse = {
   access_token: string;
 };
 
-type StargazerData = [
+type StargazerData = {
   data: {
     id?: string | number;
   }
-];
+};
 
 // Export a Github Provider to carry out OAuth and return a record object
 export class StarredGithubRepoProvider implements Provider {
@@ -64,7 +64,7 @@ export class StarredGithubRepoProvider implements Provider {
 }
 
 const verifyGithub = async (ghAccessToken: string): Promise<GithubFindMyUserResponse> => {
-  let userRequest;
+  let userRequest: any;
   try {
     // Now that we have an access token fetch the user details
     userRequest = await axios.get("https://api.github.com/user", {
@@ -96,7 +96,7 @@ const verifyGithub = async (ghAccessToken: string): Promise<GithubFindMyUserResp
 };
 
 const verifyUserGithubRepo = async (userData: GithubFindMyUserResponse, ghAccessToken: string): Promise<boolean> => {
-  let repoRequest: GithubRepoRequestResponse;
+  let repoRequest: any;
 
   try {
     // Fetch user's repo data
