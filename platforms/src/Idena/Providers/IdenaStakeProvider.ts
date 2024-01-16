@@ -24,8 +24,23 @@ abstract class IdenaStakeProvider implements Provider {
 
   // verify that the proof object contains valid === "true"
   async verify(payload: RequestPayload, context: IdenaContext): Promise<VerifiedPayload> {
+    try {
     const token = payload.proofs.sessionKey;
-    const { valid, address, expiresInSeconds } = await checkStake(token, context, this.minStake);
+    const { valid, address, expiresInSeconds = 0 } = await checkStake(token, context, this.minStake);
+    if (!valid) {
+      return { valid: false };
+    }
+    return {
+      valid: true,
+      record: {
+        address: address,
+        stake: `gt${this.minStake / 1000}`,
+      },
+      expiresInSeconds: expiresInSeconds,
+    };
+    } catch (error) {
+      return { valid: false };
+    }
     if (!valid) {
       return { valid: false };
     }
@@ -68,7 +83,7 @@ const checkStake = async (
 ): Promise<{ valid: boolean; address?: string; expiresInSeconds?: number }> => {
   try {
     const result = await requestIdentityStake(token, context);
-    const expiresInSeconds = Math.max((new Date(result.expirationDate).getTime() - new Date().getTime()) / 1000, 0);
+    const expiresInSeconds = result.expirationDate ? Math.max((new Date(result.expirationDate).getTime() - new Date().getTime()) / 1000, 0) : 0;
     return { valid: result.stake > min, address: result.address, expiresInSeconds };
   } catch (e) {
     return { valid: false };
