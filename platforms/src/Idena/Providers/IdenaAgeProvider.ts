@@ -25,18 +25,22 @@ abstract class IdenaAgeProvider implements Provider {
   // verify that the proof object contains valid === "true"
   async verify(payload: RequestPayload, context: IdenaContext): Promise<VerifiedPayload> {
     const token = payload.proofs.sessionKey;
-    const { valid, address, expiresInSeconds } = await checkAge(token, context, this.minAge);
-    if (!valid) {
+    try {
+      const { valid, address, expiresInSeconds } = await checkAge(token, context, this.minAge);
+      if (!valid) {
+        return { valid: false };
+      }
+      return {
+        valid: true,
+        record: {
+          address: address,
+          age: `gt${this.minAge}`,
+        },
+        expiresInSeconds: expiresInSeconds,
+      };
+    } catch (error) {
       return { valid: false };
     }
-    return {
-      valid: true,
-      record: {
-        address: address,
-        age: `gt${this.minAge}`,
-      },
-      expiresInSeconds: expiresInSeconds,
-    };
   }
 }
 
@@ -59,6 +63,14 @@ const checkAge = async (
   context: IdenaContext,
   min: number
 ): Promise<{ valid: boolean; address?: string; expiresInSeconds?: number }> => {
+  try {
+    const result = await requestIdentityAge(token, context);
+    const expiresInSeconds = Math.max((new Date(result.expirationDate).getTime() - new Date().getTime()) / 1000, 0);
+    return { valid: result.age > min, address: result.address, expiresInSeconds };
+  } catch {
+    return { valid: false };
+  }
+};
   try {
     const result = await requestIdentityAge(token, context);
     const expiresInSeconds = Math.max((new Date(result.expirationDate).getTime() - new Date().getTime()) / 1000, 0);
