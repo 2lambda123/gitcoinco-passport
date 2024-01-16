@@ -8,6 +8,7 @@ import { snapshotGraphQLDatabase } from "./snapshotProposalsProvider";
 
 // Defining interfaces for the data structure returned by the Snapshot graphQL DB
 interface VotesQueryResponse {
+  status?: number;
   data?: {
     data?: SnapshotVotesQueryResult;
   };
@@ -15,6 +16,14 @@ interface VotesQueryResponse {
 }
 
 interface SnapshotVotesQueryResult {
+  id?: string;
+  voter?: string;
+  proposal?: {
+    id?: string;
+  };
+  space?: {
+    id?: string;
+  };
   votes?: [
     id?: string,
     voter?: string,
@@ -28,6 +37,7 @@ interface SnapshotVotesQueryResult {
 }
 
 type SnapshotVotesCheckResult = {
+  votedOnGTETwoProposals: boolean;
   votedOnGTETwoProposals: boolean;
 };
 
@@ -57,7 +67,9 @@ export class SnapshotVotesProvider implements Provider {
 
       valid = address && verifiedPayload.votedOnGTETwoProposals ? true : false;
     } catch (e) {
-      return { valid: false };
+      return Promise.resolve({
+         valid: false
+      });
     }
 
     return Promise.resolve({
