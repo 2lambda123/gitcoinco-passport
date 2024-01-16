@@ -104,8 +104,14 @@ const checkForSnapshotVotes = async (url: string, address: string): Promise<Snap
 
   // Check to see if the user has voted on 2 or more DAO proposals, and if they have
   // set votedOnGTETwoProposals = true
-  if (votes.length >= 2) {
-    votedOnGTETwoProposals = true;
+  const proposalIds = new Set();
+votes.forEach(vote => {
+  if (vote.proposal && vote.proposal.id) {
+    proposalIds.add(vote.proposal.id);
+  }
+});
+if (proposalIds.size >= 2) {
+    votedOnGTETwoProposals = proposalIds.size >= 2;
   }
 
   // Return false by default (if the proposals array is empty or there is no
