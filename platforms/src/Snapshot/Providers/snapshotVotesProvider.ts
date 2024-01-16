@@ -1,4 +1,5 @@
 // ----- Types
+// Import types
 import type { Provider, ProviderOptions } from "../../types";
 import type { RequestPayload, VerifiedPayload } from "@gitcoin/passport-types";
 
@@ -11,6 +12,7 @@ interface VotesQueryResponse {
   data?: {
     data?: SnapshotVotesQueryResult;
   };
+  // The status of the query response
   status?: number;
 }
 
@@ -31,7 +33,8 @@ type SnapshotVotesCheckResult = {
   votedOnGTETwoProposals: boolean;
 };
 
-// Export a Snapshot Votes Provider
+// Snapshot Votes Provider class
+// Export the Snapshot Votes Provider class
 export class SnapshotVotesProvider implements Provider {
   // Give the provider a type so that we can select it with a payload
   type = "SnapshotVotesProvider";
@@ -45,6 +48,11 @@ export class SnapshotVotesProvider implements Provider {
   }
 
   // Verify that the address that is passed in has voted on 2 or more DAO proposals
+    /**
+   * Verify that the address that is passed in has voted on 2 or more DAO proposals.
+   * @param payload - The request payload containing the address to be verified.
+   * @returns A promise that resolves to the verified payload.
+   */
   async verify(payload: RequestPayload): Promise<VerifiedPayload> {
     const address = payload.address.toLocaleLowerCase();
     let valid = false,
@@ -72,11 +80,20 @@ export class SnapshotVotesProvider implements Provider {
   }
 }
 
+/**
+   * Check for Snapshot votes.
+   * @param url - The URL to query.
+   * @param address - The address to check for votes.
+   * @returns A promise that resolves to the SnapshotVotesCheckResult object.
+   */
 const checkForSnapshotVotes = async (url: string, address: string): Promise<SnapshotVotesCheckResult> => {
   let votedOnGTETwoProposals = false;
   let result: VotesQueryResponse;
 
   // Query the Snapshot graphQL DB
+if (!result || !result.data || !result.data.votes) {
+    return { votedOnGTETwoProposals: false };
+}
   try {
     result = await axios.post(url, {
       query: `
@@ -95,8 +112,8 @@ const checkForSnapshotVotes = async (url: string, address: string): Promise<Snap
           }
         }`,
     });
-  } catch (e: unknown) {
-    const error = e as { response: { data: { message: string } } };
+  } catch (e) {
+    throw new Error("The following error occurred: " + e.message)
     throw `The following error is being thrown: ${error.response.data.message}`;
   }
 

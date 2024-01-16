@@ -4,7 +4,21 @@ Guide to working with the Idena stamps.
 
 ## Local Testing
 
-You must run the idena server locally
+You must run the 1. Clone the `idena-web` repository:
+   ```
+   git clone https://github.com/idena-network/idena-web
+cd idena-web
+   ```
+
+2. Install the dependencies:
+   ```
+   npm install
+   ```
+
+3. Start the Idena server:
+   ```
+   npx next dev -p 3004
+   ```
 
 ```
 git clone https://github.com/idena-network/idena-web
