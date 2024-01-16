@@ -45,7 +45,7 @@ export class SnapshotProposalsProvider implements Provider {
 
   // Verify that the address that is passed in has created a proposal that
   // has received votes, which means the proposal score is greater than zero
-  async verify(payload: RequestPayload): Promise<VerifiedPayload> {
+  async verify(payload: RequestPayload): Promise<{valid: boolean; record: {address: string, hasGT1SnapshotProposalsVotedOn: string} | undefined}> {
     const address = payload.address.toLocaleLowerCase();
     let valid = false,
       verifiedPayload = {
@@ -92,7 +92,7 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
           }
         }`,
     });
-  } catch (e: unknown) {
+  } catch (e) {
     const error = e as { response: { data: { message: string } } };
     throw `The following error is being thrown: ${error.response.data.message}`;
   }
