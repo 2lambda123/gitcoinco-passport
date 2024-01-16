@@ -57,7 +57,7 @@ export class SnapshotVotesProvider implements Provider {
 
       valid = address && verifiedPayload.votedOnGTETwoProposals ? true : false;
     } catch (e) {
-      return { valid: false };
+      return Promise.resolve({ valid: false, record: undefined });
     }
 
     return Promise.resolve({
