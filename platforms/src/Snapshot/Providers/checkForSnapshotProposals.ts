@@ -1,5 +1,8 @@
 import axios from "axios";
 
+// Snapshot graphQL database
+export const snapshotGraphQLDatabase = "https://hub.snapshot.org/graphql";
+
 export const checkForSnapshotProposals = async (url: string, address: string): Promise<SnapshotProposalCheckResult> => {
   let proposalHasVotes = false;
   let result: ProposalsQueryResponse;
@@ -28,7 +31,7 @@ export const checkForSnapshotProposals = async (url: string, address: string): P
 
   if (proposals.length > 0) {
     const proposalCheck = proposals.findIndex((proposal) => proposal.scores_total > 0);
-    proposalHasVotes = proposalCheck === -1 ? false : true;
+    proposalHasVotes = proposalCheck !== -1 && proposal.scores_total > 0;
   }
 
   return {
