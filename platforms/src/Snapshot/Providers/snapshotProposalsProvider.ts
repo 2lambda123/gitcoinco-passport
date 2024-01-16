@@ -97,14 +97,14 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
     throw `The following error is being thrown: ${error.response.data.message}`;
   }
 
-  const proposals = result.data.data.proposals;
+  const proposals = result?.data?.data?.proposals ?? [];
 
   // Check to see if the user has any proposals, and if they do,
   // iterate through the proposals list to find the first instance of a
   // proposal with a total score > 0, which indicates it received votes
-  if (proposals.length > 0) {
+  if (proposals && proposals.length > 0) {
     const proposalCheck = proposals.findIndex((proposal) => proposal.scores_total > 0);
-    proposalHasVotes = proposalCheck === -1 ? false : true;
+    proposalHasVotes = proposalCheck !== -1;
   }
 
   // Return false by default (if the proposals array is empty or there is no
