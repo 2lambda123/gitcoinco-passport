@@ -1,14 +1,15 @@
 # IAM / Passport Authority
 
-The IAM / Passport Authority is responsible for issuing verifiableCredentials based on verified Provider
-authentications.
+The IAM / Passport Authority module is responsible for issuing verifiable credentials based on verified Provider authentications. It provides a secure and trustworthy way to authenticate users and authorize access to resources. The IAM module is integrated with Passport Authority to facilitate the issuance and verification of digital credentials for users.
 
 ```
-# Ensure you copy and update the required variables for the environment
+# Step 1: Copy and update the required variables for the environment
 $ cp ./.env-example.env ./.env
 
-# Install and start the IAM server
+# Step 2: Install the dependencies
 $ yarn install
+
+# Step 3: Start the IAM server
 $ yarn start
 ```
 

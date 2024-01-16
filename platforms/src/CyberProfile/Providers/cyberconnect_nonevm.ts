@@ -22,7 +22,7 @@ interface CheckOrgMemberResponse {
   };
 }
 
-export const checkForOrgMember = async (
+export const checkForOrgMember = async = async (
   url: string,
   address: string
 ): Promise<{ isMember: boolean; identifier: string }> => {
@@ -44,7 +44,7 @@ export const checkForOrgMember = async (
           }
         }`,
     });
-    if (result.data.errors) {
+    if (result.data?.errors?.length > 0) {
       throw result.data.errors[0].message;
     }
   } catch (e: unknown) {
