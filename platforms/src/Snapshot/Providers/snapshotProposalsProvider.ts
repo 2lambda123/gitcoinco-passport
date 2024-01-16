@@ -97,8 +97,7 @@ const checkForSnapshotProposals = async (url: string, address: string): Promise<
         }`,
     });
   } catch (e: unknown) {
-    const error = e as { response: { data: { message: string } } };
-    throw `The following error is being thrown: ${error.response.data.message}`;
+    throw formatErrorMessage(e);
   }
 
   const proposals = result.data.data.proposals;
