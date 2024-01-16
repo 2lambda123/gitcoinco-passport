@@ -34,15 +34,15 @@ export const checkForOrgMember = async (
   try {
     result = await axios.post(url, {
       query: `
-        query CheckOrgMember {
-          checkVerifiedOrganizationMember (
-            address: "${address}"
-          )
-          {
-            isVerifiedOrganizationMember
-            uniqueIdentifier
-          }
-        }`,
+              query CheckOrgMember {
+                checkVerifiedOrganizationMember (
+                  address: \`${address}\`
+                )
+                {
+                  isVerifiedOrganizationMember
+                  uniqueIdentifier
+                }
+              }`,
     });
     if (result.data.errors) {
       throw result.data.errors[0].message;
