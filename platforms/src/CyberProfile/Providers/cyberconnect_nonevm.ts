@@ -48,7 +48,7 @@ export const checkForOrgMember = async (
       throw result.data.errors[0].message;
     }
   } catch (e: unknown) {
-    throw `The following error is being thrown: ${JSON.stringify(e)}`;
+    throw formatErrorMessage(e);
   }
 
   isMember = result.data.data.checkVerifiedOrganizationMember.isVerifiedOrganizationMember;
