@@ -44,7 +44,7 @@ export const checkForOrgMember = async (
           }
         }`,
     });
-    if (result.data.errors) {
+    if (result.data && result.data.errors) {
       throw result.data.errors[0].message;
     }
   } catch (e: unknown) {
