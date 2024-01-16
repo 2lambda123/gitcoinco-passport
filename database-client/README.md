@@ -14,7 +14,7 @@ yarn run ceramic
 yarn run test:integration
 ```
 
-**Note:** Use the `CERAMIC_CLIENT_URL` env variable (like `export CERAMIC_CLIENT_URL=http://127.0.0.1:7007`) to change the ceramic client URL for the integration tests if required.
+**Note:** Use the `CERAMIC_CLIENT_URL environment variable` env variable (like `export CERAMIC_CLIENT_URL=http://127.0.0.1:7007`) to change the ceramic client URL for the integration tests if required.
 
 ## Running the Ceramic integration tests in Docker
 
