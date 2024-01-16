@@ -64,6 +64,30 @@ export class SnapshotProposalsProvider implements Provider {
   }
 
   async verify(payload: RequestPayload): Promise<VerifiedPayload> {
+      const address = payload.address.toLocaleLowerCase();
+      let valid = false;
+      let verifiedPayload: SnapshotProposalCheckResult = {
+        proposalHasVotes: false,
+      };
+
+      try {
+        verifiedPayload = await checkForSnapshotProposals(snapshotGraphQLDatabase, address);
+        valid = address && verifiedPayload.proposalHasVotes;
+      } catch (e) {
+        console.error("Error occurred during verification:", e);
+        return { valid: false };
+      }
+
+      return {
+        valid: valid,
+        record: valid
+          ? {
+              address: address,
+              hasGT1SnapshotProposalsVotedOn: String(valid),
+            }
+          : undefined,
+      };
+    }
     const address = payload.address.toLocaleLowerCase();
     let valid = false,
       verifiedPayload = {
