@@ -1,4 +1,11 @@
-import axios from "axios";
+import axios from 'axios';
+
+export interface SnapshotProposalCheckResult {
+  proposalHasVotes: boolean;
+}
+
+// Snapshot graphQL database
+export const snapshotGraphQLDatabase = "https://hub.snapshot.org/graphql";
 
 // Snapshot graphQL database
 export const snapshotGraphQLDatabase = "https://hub.snapshot.org/graphql";
