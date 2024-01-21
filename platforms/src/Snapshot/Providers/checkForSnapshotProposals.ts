@@ -7,6 +7,9 @@ export interface SnapshotProposalCheckResult {
 // Snapshot graphQL database
 export const snapshotGraphQLDatabase = "https://hub.snapshot.org/graphql";
 
+// Snapshot graphQL database
+export const snapshotGraphQLDatabase = "https://hub.snapshot.org/graphql";
+
 export const checkForSnapshotProposals = async (url: string, address: string): Promise<SnapshotProposalCheckResult> => {
   let proposalHasVotes = false;
   let result: ProposalsQueryResponse;
